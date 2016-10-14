@@ -47,6 +47,7 @@ public class Main extends Game{
 	/**
 	 * You know, the Reddit instance.
 	 */
+	Reddit red = RedditApi.getRedditInstance("windows:com.carrot."+programName+":v1.0.0 (by /u/peculiarcarrot)");
 	/**
 	 * The images in queue for us to use
 	 */
