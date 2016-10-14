@@ -1,8 +1,11 @@
 package com.carrot.redditwallpaper;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -10,13 +13,15 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import com.carrotbase.Game;
+
 import ga.dryco.redditjerk.api.Reddit;
 import ga.dryco.redditjerk.implementation.RedditApi;
 import ga.dryco.redditjerk.wrappers.Link;
 
-public class Main {
-	
-	
+public class Main extends Game{
+	private static final long serialVersionUID = 1L;
+
 	public static Main main;
 	
 	/**
@@ -34,27 +39,28 @@ public class Main {
 	/**
 	 * The exact time the program started
 	 */
-	long startTime;
+	public long startTime;
 	/**
 	 * How many times we've updated the queue (used for timekeeping)
 	 */
-	int updates=0;
+	public int updates=0;
 	/**
 	 * You know, the Reddit instance.
 	 */
-	Reddit red = RedditApi.getRedditInstance("RedditWallpaper");
 	/**
 	 * The images in queue for us to use
 	 */
 	ArrayList<QueuedImage> queuedImages=new ArrayList<QueuedImage>();
-
-	public static void main(String[] args) {
-		main=new Main();
-		main.init();
-	}
+	/**
+	 * Whether or not everything has been initialized
+	 */
+	boolean initialized;
 	
-	public void init()
-	{
+	public static String programName="RedPaper";
+	
+	public void initiate() {
+		Main.main=this;
+		createWindow(800,600,programName+" Settings");
 		//Initialize everything
 		startTime=System.currentTimeMillis();
 		{
@@ -68,9 +74,10 @@ public class Main {
 			if(userPrefs.preferencesExist())
 				userPrefs.load();
 		}
-		userPrefs.save();
-		updateImages();
-		iterateThroughImages();
+		//userPrefs.save();
+		//updateImages();
+		//iterateThroughImages();
+		
 	}
 	
 	/**
@@ -117,7 +124,6 @@ public class Main {
 				 }
 				 old.delete();
 			 }
-			
 		 }
 		iterateThroughImages();
 	}
@@ -195,5 +201,20 @@ public class Main {
 		}
 		    return null;
 		}
+	
+	public static BufferedImage getJarImage(String name)
+	{
+		try {
+			return ImageIO.read(Main.class.getResourceAsStream(name));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void render(Graphics2D g) {
+		g.setColor(Color.RED);
+		g.fillRect(0,0,getWidth(),getHeight());
+	}
 
 }
