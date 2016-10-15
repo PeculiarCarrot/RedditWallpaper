@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import com.carrotbase.Game;
 
@@ -21,13 +22,11 @@ import ga.dryco.redditjerk.wrappers.Link;
 
 public class Main extends Game{
 	private static final long serialVersionUID = 1L;
-
-	public static Main main;
 	
 	/**
 	 * Where we're going to save all of our data
 	 */
-	public final String savePath=System.getenv("APPDATA")+"\\RedditWallpaper\\";
+	public final String savePath=System.getenv("APPDATA")+"\\RedPaper\\";
 	public final String imageSavePath=savePath+"images\\";
 	public final String preferencesSavePath=savePath+"preferences.json";
 	
@@ -47,7 +46,7 @@ public class Main extends Game{
 	/**
 	 * You know, the Reddit instance.
 	 */
-	Reddit red = RedditApi.getRedditInstance("windows:com.carrot."+programName+":v1.0.0 (by /u/peculiarcarrot)");
+	Reddit red;
 	/**
 	 * The images in queue for us to use
 	 */
@@ -56,13 +55,15 @@ public class Main extends Game{
 	 * Whether or not everything has been initialized
 	 */
 	boolean initialized;
+	public String userAgent="windows:com.carrot."+programName.toLowerCase()+":v1.0.0 (by /u/peculiarcarrot)";
 	
 	public static String programName="RedPaper";
 	
-	public void initiate() {
-		Main.main=this;
-		createWindow(800,600,programName+" Settings");
-		//Initialize everything
+	public void initializePrefs()
+	{
+		red = RedditApi.getRedditInstance(userAgent);
+		if(UserPrefs.Default==null)
+			UserPrefs.Default=new UserPrefs(main);
 		startTime=System.currentTimeMillis();
 		{
 			//Create the data directories if they don't exist
@@ -75,10 +76,12 @@ public class Main extends Game{
 			if(userPrefs.preferencesExist())
 				userPrefs.load();
 		}
-		//userPrefs.save();
-		//updateImages();
-		//iterateThroughImages();
-		
+		userPrefs.save();
+	}
+	
+	public void initiate() {
+		updateImages();
+		iterateThroughImages();
 	}
 	
 	/**
@@ -86,6 +89,11 @@ public class Main extends Game{
 	 */
 	public void iterateThroughImages()
 	{
+		if(queuedImages.size()==0)
+		{
+			JOptionPane.showMessageDialog(null,"No applicable threads could be found.");
+			System.exit(1);
+		}
 		for(int i=0;i<queuedImages.size();i++)
 		 {
 			//Load the image. If it loads correctly and fits the size requirements in userprefs, we change the wallpaper
@@ -134,6 +142,8 @@ public class Main extends Game{
 	 */
 	public void updateImages()
 	{
+		trayIcon.setToolTip(programName+" - Updating images...");
+		frame.setTitle(trayIcon.getToolTip());
 		updates++;
 		queuedImages.clear();
 		
@@ -151,6 +161,8 @@ public class Main extends Game{
 					 }
 			 }
 		 }
+		trayIcon.setToolTip(programName);
+		frame.setTitle(programName+" Settings");
 	}
 	
 	/**

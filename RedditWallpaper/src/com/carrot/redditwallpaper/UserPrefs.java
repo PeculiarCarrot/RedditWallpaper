@@ -24,9 +24,23 @@ public class UserPrefs {
 	
 	public Main main;
 	
+	public static UserPrefs Default;
+	
 	public UserPrefs(Main main)
 	{
 		this.main=main;
+	}
+	
+	public void changeToDefaults()
+	{
+		numTop=Default.numTop;
+		subreddits=Default.subreddits;
+		changeMins=Default.changeMins;
+		updateHours=Default.updateHours;
+		minWidth=Default.minWidth;
+		minHeight=Default.minHeight;
+		maxStoredImages=Default.maxStoredImages;
+		allowNSFW=Default.allowNSFW;
 	}
 	
 	/**
@@ -36,7 +50,7 @@ public class UserPrefs {
 	/**
 	 * How many top posts to look at from each subreddit
 	 */
-	public int numTop=20;
+	public int numTop=15;
 	/**
 	 * How many minutes between each wallpaper change
 	 */
@@ -123,19 +137,19 @@ public class UserPrefs {
 				 numTop=(int) ((long)obj.get("numTop"));
 				 break;
 			 case "changeMins":
-				 numTop=(int) ((long)obj.get("changeMins"));
+				 changeMins=(int) ((long)obj.get("changeMins"));
 				 break;
 			 case "minWidth":
-				 numTop=(int) ((long)obj.get("minWidth"));
+				 minWidth=(int) ((long)obj.get("minWidth"));
 				 break;
 			 case "minHeight":
-				 numTop=(int) ((long)obj.get("minHeight"));
+				 minHeight=(int) ((long)obj.get("minHeight"));
 				 break;
 			 case "maxStoredImages":
-				 numTop=(int) ((long)obj.get("maxStoredImages"));
+				 maxStoredImages=(int) ((long)obj.get("maxStoredImages"));
 				 break;
 			 case "updateHours":
-				 numTop=(int) ((long)obj.get("updateHours"));
+				 updateHours=(int) ((long)obj.get("updateHours"));
 				 break;
 			 case "allowNSFW":
 				 allowNSFW=(boolean)obj.get("allowNSFW");
